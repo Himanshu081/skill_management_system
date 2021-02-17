@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Management System</title>
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>  
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>  
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600&family=Quicksand:wght@300;400;600&family=Montserrat:wght@200;300;400;500;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+   
+</head>
+<body>
+    <div class="parent">
+    <div class="header">
+        <div class="try-content">
+            <h1 class="logo">My Skills<span>MANAGER</span></h1>
+            <p>
+                Ready to boost your Skills?
+            </p>
+            <br>
+            
+        </div>
+        <div class="try-image">
+            <img src="images/Asset 3.png" alt="">
+        </div>
+        
+
+
+    </div>
+ 
+  
+
+
+    <!-- <input type="button" id = "btnAdd" onclick = "AddDropDownList()" value = "Add DropDownList" /> -->
+    <br>
+    <span id ="form_result_error">
+
+    </span>
+    <br>
+    <span id ="form_success_message">
+
+    </span>
+    <br>
+
+
+    <div id = "dvContainer"style="padding: 10px;margin:10px">
+        
+        <br>
+        <form onsubmit="event.preventDefault(); onFromSubmit()" >
+        <div class="content" style="display:flex;flex-direction:row;">
+
+            <div class="name"style="margin-right:30px;">
+                <label>Name</label>
+                <input type="text"   class="form-control"  placeholder="Enter email" id="name" name="name" placeholder="Enter Name"style="marginRight:10px">
+                
+            </div>
+          <div class="email">
+            <label>Email</label>
+            <input type="email"  class="form-control" id="email" name="email"placeholder="Enter Email"> 
+    
+          </div>
+           
+    
+        </div>
+        <br>
+
+        <h6>Add Skills :</h6>
+
+        <div class="select-container">
+            <select name="technologies" id="technology" class="technology">
+           
+             </select>
+            <select name="levels" id="levels" class="levels">
+                <option value="none" selected disabled hidden> 
+                Select a Level 
+                 </option> 
+            
+                <option value="Level-1" >Level-1</option>
+                <option value="Level-2" >Level-2</option>
+                <option value="Level-3">Level-3</option>
+                <option value="Level-4">Level-4</option>
+                <option value="Level-5">Level-5</option>
+        </select>
+            <input type="button"  class="btn btn-success btn-xl" id = "btnAdd" onclick = "AddDropDownList()" value = " Add" />
+        </div>
+
+    </div>
+
+    <div class="selected-parent">
+        <h6>Selected Skills :</h6>
+        <!-- <input type="button" id = "btnGet" onclick = "GetDropDownList()" value = " Get DropDownList" /> -->
+    <div id="selected_skills" style="display: flex;flex-direction: row;">
+        
+     
+        <!-- <p id="selected_skills_para"></p> -->
+        
+    </div>
+    <br><br>
+    <input type="button" id = "submit" class="btn btn-primary btn-xls" onclick = "onFormSubmit()" value = "Submit" />
+</form>
+</div>
+
+</div>
+<table class="table ml-3 p-2" id="userList">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Skills Levels</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+</td>
+</tr>
+</table>
+
+
+<script type="text/javascript">
+  $(function () {
+    $('#btnAdd').click(function (e) {
+       e.preventDefault();
+
+    })
+    var myurl="https://demo.stratbeans.com/atum-barium/index.php?r=site/fetchTechnologies";
+            var technology_dropdown = $("#technology");
+            technology_dropdown.empty().append('<option selected="selected" value="0" disabled = "disabled">Loading.....</option>');
+            $.ajax({
+                type: "POST",
+                url: myurl,
+                data: '{}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    console.log(response);
+                    technology_dropdown.empty().append('<option selected="selected" value="0"> Select a Skill</option>');
+                    $.each(response, function () {
+                        technology_dropdown.append($("<option></option>").val(this['id']).html(this['name']));
+                    });
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+
+
+
+      
+    var counter=0;
+    var selectedRow = null
+    var selectedVal = new Array();
+    console.log("outer counter is:"+counter);
+    function AddDropDownList() {
+        var btnAdd = document.getElementById("btnAdd");
+     
+        if(counter<5){
+            var dvContainer = document.getElementById("selected_skills")
+            var Selected_skills_Container = document.getElementById("selected_skills")
+ 
+            
+            var div = document.createElement("DIV");
+            div.style.display="flex";
+            div.style.flexDirection="row";
+            div.style.justifyContent="space-between";
+            div.style.alignItems="center";
+
+
+       
+           
+          
+            div.style.padding = "10px"
+         
+            
+            
+
+
+
+            var selectedtechvalue =document.getElementById("technology").value;
+            console.log("skill dropdown"+selectedtechvalue);
+            var selectedtech;
+            if (selectedtechvalue==0){
+                
+                var tech_error = '';
+                tech_error += '<div class="alert alert-danger alert-dismissible fade show"   role="alert" >';
+                    tech_error += '<p>' + "Please select a technology !" + '</p>';
+        
+              tech_error += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+              var alert_box=document.getElementById("form_result_error");
+              alert_box.innerHTML=tech_error
+
+            //   setTimeout(function() {alert_box.innerHTML=tech_error;},100);
+            setTimeout(function() {
+                $(".alert").alert('close');
+                      }, 2000);
+            
+
+
+            }
+            else{
+
+             if(selectedtechvalue == 1){
+                 selectedtech ="Php"
+             }
+             else if(selectedtechvalue==2){
+                 selectedtech ="MySQL"
+             }
+             else if(selectedtechvalue ==3){
+                 selectedtech ="Html-CSS"
+             }
+             else if(selectedtechvalue ==4){
+                selectedtech ="Javascript"
+             }
+             else if(selectedtechvalue==5){
+                selectedtech ="Yii"
+             }
+            
+
+            // console.log(selectedtech);
+            var selectedlevelvalue =document.getElementById("levels").value;
+            if(selectedlevelvalue =="none")
+            {
+                var level_error = '';
+                level_error += '<div class="alert alert-danger alert-dismissible fade show" role="alert" >';
+                    level_error += '<p>' + "Please select a level !" + '</p>';
+        
+                    level_error += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+        // console.log(name_error)
+              var alert_box=document.getElementById("form_result_error");
+               alert_box.innerHTML=level_error;
+               setTimeout(function() {
+                $(".alert").alert('close');
+                      }, 2000);
+
+            }
+            else{
+
+
+            // var para = document.createElement("P");    
+            // para.innerText=selectedtech+"-"+selectedlevelvalue;
+            var selected_options=selectedtech+"-"+selectedlevelvalue;
+       
+            var display_selected_tech='<button type="button" class="btn btn-lg btn-dark" style="border-radius:25px;font-size:13px" disabled>'+selectedtech+"-"+selectedlevelvalue+'</button>';
+            // div.appendChild(para);
+            div.innerHTML=display_selected_tech;
+            selectedVal.push(selected_options);
+            console.log("add dropdown values selected val::"+selectedVal);
+
+         
+            dvContainer.appendChild(div);
+            counter++;
+            console.log(counter);
+        }
+    }
+}
+        else{
+            var tech_error = '';
+                tech_error += '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
+                    tech_error += '<p>' + "You can add only 5 technologies !" + '</p>';
+        
+              tech_error += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+              var alert_box=document.getElementById("form_result_error");
+               alert_box.innerHTML=tech_error;
+               setTimeout(function() {
+                $(".alert").alert('close');
+                      }, 2000);
+        }
+
+    };
+    function onFormSubmit(){
+        if (validate()) {
+            var formData = readFormData();
+      
+            insertNewRecord(formData);
+            resetForm();
+            console.log("after insertin selected val array::"+selectedVal);
+    }
+    }
+
+    function readFormData(){
+        var formData= {};
+        formData["Name"]=document.getElementById("name").value;
+        formData["Email"]=document.getElementById("email").value;
+        formData["Seleceted_Skills"]=selectedVal;
+        console.log("inside readForm Daata"+formData["Seleceted_Skills"]);
+        return formData;
+
+
+    }
+
+    function insertNewRecord(data) {
+    var table = document.getElementById("userList").getElementsByTagName('tbody')[0];
+    var newRow = table.insertRow(table.length);
+    cell1 = newRow.insertCell(0);
+    cell1.innerHTML = data.Name;
+    cell2 = newRow.insertCell(1);
+    cell2.innerHTML = data.Email;
+    cell3 = newRow.insertCell(2);   
+    for (i = 0; i < data.Seleceted_Skills.length; i++) { 
+         var row=document.createElement('tr');
+
+        
+        row.innerHTML = data.Seleceted_Skills[i];
+        cell3.appendChild(row);
+
+    }
+    cell4 = newRow.insertCell(3);
+    cell4.innerHTML = `<a onClick="onDelete(this)"> <i class="fas fa-trash-alt icon trash-icon"></i></a>`;
+
+    var success_message = '';
+    success_message += '<div class="alert alert-success alert-dismissible fade show" role="alert" >';
+        success_message += '<p>' + "Data Inserted SuccessFully!" + '</p>';
+        
+        success_message += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+        // console.log(name_error)
+        var alert_box=document.getElementById("form_success_message");
+        alert_box.innerHTML=success_message;
+        setTimeout(function() {
+                $(".alert").alert('close');
+                      }, 2000);
+
+
+}
+function resetForm(){
+    document.getElementById("name").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("selected_skills").innerHTML="";
+    document.getElementById("form_result_error").innerHTML="";
+    selectedVal.length=0;
+    counter=0;
+
+   
+
+}
+function validate() {
+    isValid = true;
+    if (document.getElementById("name").value == "" && document.getElementById("email").value == "" ) {
+        isValid = false;
+        var name_error = '';
+        name_error += '<div class="alert alert-danger alert-dismissible fade show" role="alert" >';
+        name_error += '<p>' + "Name and Email is Required !" + '</p>';
+        
+        name_error += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+        // console.log(name_error)
+        var alert_box=document.getElementById("form_result_error");
+        alert_box.innerHTML=name_error;
+        setTimeout(function() {
+                $(".alert").alert('close');
+                      }, 2000);
+     
+    }
+    else if(document.getElementById("name").value == ""){
+        isValid = false;
+        var name_error = '';
+        name_error += '<div class="alert alert-danger alert-dismissible fade show" role="alert" >';
+        name_error += '<p>' + "Name  is Required !" + '</p>';
+        
+        name_error += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+        // console.log(name_error)
+        var alert_box=document.getElementById("form_result_error");
+        alert_box.innerHTML=name_error;
+        setTimeout(function() {
+                $(".alert").alert('close');
+                      }, 2000);
+        // console.log(alert_box.innerHTML);
+
+
+    }
+    else if(document.getElementById("email").value == ""){
+        isValid = false;
+        var name_error = '';
+        name_error += '<div class="alert alert-danger alert-dismissible fade show" role="alert" >';
+        name_error += '<p>' + "Email  is Required !" + '</p>';
+        
+        name_error += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+
+        var alert_box=document.getElementById("form_result_error");
+        alert_box.innerHTML=name_error;
+        setTimeout(function() {
+                $(".alert").alert('close');
+                      }, 2000);
+        
+
+    }
+    else if(selectedVal.length<=0){
+
+        isValid = false;
+        isValid = false;
+        var name_error = '';
+        name_error += '<div class="alert alert-danger alert-dismissible fade show" role="alert" >';
+        name_error += '<p>' + "It is Mandotary to add Skills!" + '</p>';
+        
+        name_error += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+
+        var alert_box=document.getElementById("form_result_error");
+        alert_box.innerHTML=name_error;
+        setTimeout(function() {
+                $(".alert").alert('close');
+                      }, 2000);
+
+    
+
+    } 
+    else {
+        isValid = true;
+        
+    }
+    return isValid;
+}
+function onDelete(td) {
+  
+        row3=td.parentElement.parentElement;  
+
+ if (confirm('Are you sure to delete this record ?')) {
+        row = td.parentElement.parentElement;
+        document.getElementById("userList").deleteRow(row.rowIndex);
+        resetForm();
+       
+    }
+    
+
+
+
+
+}
+        
+
+    </script>
+    
+</body>
+
+</html>
